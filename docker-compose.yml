@@ -2,7 +2,7 @@ version: "3"
 services:
     mautic:
       restart: always
-      image: "mautic/mautic-v3-${MAUTIC_HTTP_SERVER}"
+      image: "mautic/mautic:v3-${MAUTIC_HTTP_SERVER}"
       ports: 
         - ${MAUTIC_HTTP_PORT}:80
       volumes:
