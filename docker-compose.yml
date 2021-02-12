@@ -15,15 +15,16 @@ services:
         - MAUTIC_RUN_CRON_JOBS=${MAUTIC_RUN_CRON}
     
     mysql:
-      image: 'deckapp/mysql:v10.1.19'
+      build:
+        context: ./mysql
       environment:
         - "MYSQL_DATABASE=${DB_NAME}"
         - "MYSQL_USER=${DB_USER}"
         - "MYSQL_PASSWORD=${DB_PASSWORD}"
         - "MYSQL_ROOT_PASSWORD=${DB_PASSWORD}"
       volumes:
-        - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
-        - ./mysql:/etc/mysql/
+        - ${DATA_PATH_HOST}/mysql:/app
+        - ${MYSQL_PATH}/my.cnf:/etc/mysql/my.cnf
       ports:
         - ${MYSQL_PORT}:3306
     
