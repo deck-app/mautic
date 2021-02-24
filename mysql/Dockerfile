@@ -4,6 +4,8 @@ LABEL MAINTAINER Naba Das <hello@get-deck.com>
 WORKDIR /app
 VOLUME /app
 
+RUN apk update
+RUN apk add bash
 RUN apk add --update mysql mysql-client && rm -f /var/cache/apk/*
 
 # These lines moved to the end allow us to rebuild image quickly after only these files were modified.
