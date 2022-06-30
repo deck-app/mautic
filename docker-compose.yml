@@ -1,32 +1,38 @@
 version: '3'
 services:
-    mautic:
-      restart: always
-      build: 
-        context: './mautic'
-        dockerfile: 'Dockerfile-${MAUTIC_HTTP_SERVER}'
-      ports: 
-        - ${MAUTIC_HTTP_PORT}:80
-      volumes:
-        - ${mautic_data}:/var/www/html
-      environment:
-        - MAUTIC_DB_HOST=mysql
-        - MAUTIC_DB_USER=${DB_USER}
-        - MAUTIC_DB_PASSWORD=${DB_PASSWORD}
-        - MAUTIC_DB_NAME=${DB_NAME}
-        - MAUTIC_RUN_CRON_JOBS=${MAUTIC_RUN_CRON}
-        - MAUTIC_HTTP_SERVERP=${MAUTIC_HTTP_SERVER}
-    
-    mysql:
-      build:
-        context: './mysql'
-      environment:
-        - 'MYSQL_DATABASE=${DB_NAME}'
-        - 'MYSQL_USER=${DB_USER}'
-        - 'MYSQL_PASSWORD=${DB_PASSWORD}'
-        - 'MYSQL_ROOT_PASSWORD=${DB_root_PASSWORD}'
-      volumes:
-        - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
-      ports:
-        - ${MYSQL_PORT}:3306
-    
+  mautic:
+    build:
+      context: 'mautic'
+      dockerfile: 'Dockerfile-${PHP_VERSION}'
+      args:
+        - 'BACK_END=${BACK_END}'
+        - 'USER_ID=${USER_ID}'
+        - 'GROUP_ID=${GROUP_ID}'
+        - 'PHP_VERSION=${PHP_VERSION}'
+        - 'DISPLAY_PHPERROR=${DISPLAY_PHPERROR}'
+        - 'XDEBUG=${XDEBUG}'
+    volumes:
+      - '${APP_CODE_PATH_HOST}:${APP_CODE_PATH_MAUTIC}${APP_CODE_CONTAINER_FLAG}'
+    ports:
+      - '${MAUTIC_HOST_HTTP_PORT}:80'
+  mariadb:
+    image: mariadb:${MARIADB_VERSION}
+    environment:
+      - 'MARIADB_DATABASE=${DB_NAME}'
+      - 'MARIADB_USER=${DB_USER}'
+      - 'MARIADB_PASSWORD=${DB_PASSWORD}'
+      - 'MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}'
+    volumes:
+      - '${DATA_PATH_HOST}:/var/lib/mysql'
+    ports:
+      - ${MYSQL_PORT}:3306
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      - 'PMA_ARBITRARY=1'
+      - 'MYSQL_USER=${DB_USER}'
+      - 'MYSQL_PASSWORD=${DB_PASSWORD}'
+      - 'MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}'
+    ports:
+      - '${PMA_PORT}:80'
+volumes: {}
