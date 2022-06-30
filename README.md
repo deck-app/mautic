@@ -1,5 +1,5 @@
 ## Mautic 
-============================
+
 Mautic is the world's largest open source marketing automation project. With over 200,000 organisations using Mautic and over 1,000 community volunteers, we empower businesses by making it easy to manage their marketing across a range of channels.
 
 
