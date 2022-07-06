@@ -41,7 +41,7 @@ apk add php7-pecl-xdebug \
 ;fi
 
 RUN apk add php7-zip
-RUN apk add tar zip php7-gd php7-pdo php7-pdo_dblib php7-pdo_mysql php7-pdo_odbc php7-pdo_pgsql php7-pdo_sqlite
+RUN apk add tar zip php7-gd php7-pdo php7-pdo_dblib php7-pdo_mysql php7-pdo_odbc php7-pdo_pgsql php7-pdo_sqlite php7-imap
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ## Linux permission issue
