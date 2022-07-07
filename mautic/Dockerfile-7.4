@@ -53,7 +53,7 @@ RUN if [[ ${BACK_END} = nginx ]] ; then usermod -u ${USER_ID} nobody && groupmod
 #Application Download
 RUN curl -fLk -o /app/mautic.zip  "https://github.com/mautic/mautic/releases/download/4.4.0/4.4.0.zip"
 RUN cd /app/ && unzip mautic.zip && rm mautic.zip 
-
+COPY index.php /app/index.php
 RUN sed -i "s#{BACK_END}#${BACK_END}#g" /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 CMD /docker-entrypoint.sh & /sbin/runit-wrapper
