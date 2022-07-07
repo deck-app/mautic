@@ -10,7 +10,7 @@ The easiest way to start mautic with Mariadb is using Docker Compose. Just clone
 # Note:- 
 ```
 If ssl not required then please removed `$_SERVER['HTTPS'] = 'on';` in index.php
-
+```
 ### Install
 
 ## Using DECK
