@@ -7,6 +7,10 @@ Mautic is the world's largest open source marketing automation project. With ove
 
 The easiest way to start mautic with Mariadb is using Docker Compose. Just clone this repo and run following command in the root directory. The default docker-compose.yml uses Mariadb and phpMyAdmin.
 
+# Note:- 
+```
+If ssl not required then please removed `$_SERVER['HTTPS'] = 'on';` in index.php
+
 ### Install
 
 ## Using DECK
