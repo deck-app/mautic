@@ -4,7 +4,7 @@ LABEL maintainer Naba Das <hello@get-deck.com>
 
 # Persistent runtime dependencies
 # Example RUN apk add --no-cache php8-openssl php8-sysvmsg php8-curl
-RUN apk add --no-cache tar git php8-gd php8-pdo php8-pdo_dblib php8-pdo_mysql php8-pdo_odbc php8-pdo_pgsql php8-pdo_sqlite
+RUN apk add --no-cache tar git php8-gd php8-pdo php8-pdo_dblib php8-pdo_mysql php8-pdo_odbc php8-pdo_pgsql php8-pdo_sqlite sudo
 
 RUN mkdir -p /app
 RUN mkdir -p /var/preview
@@ -41,6 +41,14 @@ RUN if [ ${XDEBUG} = true ]; then \
 apk add php8-pecl-xdebug \
 && echo "zend_extension=xdebug" >> /etc/php8/php.ini \
 ;fi
+
+COPY login.sh /etc/profile.d/login.sh
+RUN if [ ${BACK_END} = nginx ]; then \
+sed -i "s#{USER}#nobody#g" /etc/profile.d/login.sh \
+;else \
+sed -i "s#{USER}#apache#g" /etc/profile.d/login.sh \
+;fi
+RUN chmod +x /etc/profile.d/login.sh
 
 ## Linux permission issue
 ARG USER_ID

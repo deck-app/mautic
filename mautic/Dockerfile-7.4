@@ -41,7 +41,15 @@ apk add php7-pecl-xdebug \
 ;fi
 
 RUN apk add php7-zip
-RUN apk add tar zip php7-gd php7-pdo php7-pdo_dblib php7-pdo_mysql php7-pdo_odbc php7-pdo_pgsql php7-pdo_sqlite php7-imap
+RUN apk add tar zip php7-gd php7-pdo php7-pdo_dblib php7-pdo_mysql php7-pdo_odbc php7-pdo_pgsql php7-pdo_sqlite php7-imap sudo
+
+COPY login.sh /etc/profile.d/login.sh
+RUN if [ ${BACK_END} = nginx ]; then \
+sed -i "s#{USER}#nobody#g" /etc/profile.d/login.sh \
+;else \
+sed -i "s#{USER}#apache#g" /etc/profile.d/login.sh \
+;fi
+RUN chmod +x /etc/profile.d/login.sh
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ## Linux permission issue
