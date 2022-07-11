@@ -51,6 +51,13 @@ sed -i "s#{USER}#apache#g" /etc/profile.d/login.sh \
 ;fi
 RUN chmod +x /etc/profile.d/login.sh
 
+# sudo command without password
+RUN if [ ${BACK_END} = nginx ]; then \
+echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+;else \
+echo "apache ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+;fi
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ## Linux permission issue
 ARG USER_ID

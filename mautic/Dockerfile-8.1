@@ -50,6 +50,13 @@ sed -i "s#{USER}#apache#g" /etc/profile.d/login.sh \
 ;fi
 RUN chmod +x /etc/profile.d/login.sh
 
+# sudo command without password
+RUN if [ ${BACK_END} = nginx ]; then \
+echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+;else \
+echo "apache ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+;fi
+
 ## Linux permission issue
 ARG USER_ID
 ARG GROUP_ID
