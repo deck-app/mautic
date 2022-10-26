@@ -277,7 +277,7 @@ jobs:
     - name: Durpal application test
       run:  |
         sleep 30s
-        docker exec mautic_mautic_1 chown -R nobody:nobody /var/www/
+        docker exec mautic_mautic_1 chown -R apache:apache /var/www/
         docker exec mautic_mautic_1 ls -la
         docker exec mautic_mautic_1 cat /etc/apache2/httpd.conf
         while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:5647/index.php/installer)" != "200" ]]; 
@@ -334,7 +334,7 @@ jobs:
     - name: Durpal application test
       run:  |
         sleep 30s
-        docker exec mautic_mautic_1 chown -R nobody:nobody /var/www/
+        docker exec mautic_mautic_1 chown -R apache:apache /var/www/
         docker exec mautic_mautic_1 ls -la
         docker exec mautic_mautic_1 cat /etc/apache2/httpd.conf
         while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:5647/index.php/installer)" != "200" ]]; 
@@ -392,7 +392,7 @@ jobs:
     - name: Durpal application test
       run:  |
         sleep 30s
-        docker exec mautic_mautic_1 chown -R nobody:nobody /var/www/
+        docker exec mautic_mautic_1 chown -R apache:apache /var/www/
         docker exec mautic_mautic_1 ls -la
         docker exec mautic_mautic_1 cat /etc/apache2/httpd.conf
         while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:5647/index.php/installer)" != "200" ]]; 
@@ -449,7 +449,7 @@ jobs:
     - name: Durpal application test
       run:  |
         sleep 30s
-        docker exec mautic_mautic_1 chown -R nobody:nobody /var/www/
+        docker exec mautic_mautic_1 chown -R apache:apache /var/www/
         docker exec mautic_mautic_1 ls -la
         docker exec mautic_mautic_1 cat /etc/apache2/httpd.conf
         while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:5647/index.php/installer)" != "200" ]]; 
