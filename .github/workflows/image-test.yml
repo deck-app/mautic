@@ -285,7 +285,7 @@ jobs:
     - name: Root path check
       run: docker exec mautic_mautic_1 cat /etc/apache2/httpd.conf
     - name: Mautic test
-      run:  curl -i http://localhost:5647
+      run:  curl -i http://localhost:5647/index.php/installer
     - name: Destroy container and file
       run:  |
         docker-compose down
