@@ -16,7 +16,7 @@ services:
     ports:
       - '${MAUTIC_HOST_HTTP_PORT}:80'
   mariadb:
-    image: mariadb:${MARIADB_VERSION}
+    image: ghcr.io/deck-app/mariadb:${MARIADB_VERSION}
     environment:
       - 'MARIADB_DATABASE=${DB_NAME}'
       - 'MARIADB_USER=${DB_USER}'
