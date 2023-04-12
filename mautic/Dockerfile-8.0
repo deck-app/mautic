@@ -23,7 +23,7 @@ RUN if [ ${BACK_END} = nginx ]; then \
     sed -i "s#{SERVER_ROOT}#/var/preview#g" /etc/apache2/httpd.conf && \
     sed -i "s#{SERVER_ROOT}#/var/www/#g" /app/httpd.conf \
 ;fi
-RUN apk add --no-cache zip
+
 
 WORKDIR /var/www
 #PHP display error enable or disable
