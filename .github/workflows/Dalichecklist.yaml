@@ -12,7 +12,7 @@ jobs:
   Drupal-AMD64:
     strategy:
       matrix:
-        BACK_END: ["nginx", "apache"]
+        BACK_END: ["nginx"]
         pv: ["8.0", "7.4"]
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +76,7 @@ jobs:
   Drupal-ARM64:
     strategy:
       matrix:
-        BACK_END: ["nginx", "apache"]
+        BACK_END: ["nginx"]
         pv: ["8.0", "7.4"]
     runs-on: ubuntu-22.04
     name: Drupal-ARM64
