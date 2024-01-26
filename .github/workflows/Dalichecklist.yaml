@@ -1,0 +1,152 @@
+name: mautic
+
+on:
+  schedule:
+  - cron:  '00 01 * * *'
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  Drupal-AMD64:
+    strategy:
+      matrix:
+        BACK_END: ["nginx", "apache"]
+        pv: ["8.0", "7.4"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image ${{ matrix.BACK_END }}, php ${{ matrix.pv }} and mautic
+        run: docker-compose -f "docker-compose.yml" up -d --build
+        env:
+          PHP_VERSION: ${{ matrix.pv }}
+          BACK_END: ${{ matrix.BACK_END }}
+          XDEBUG: true
+          DISPLAY_PHPERROR: true
+          SERVER_ROOT:  /var/www/
+          APP_CODE_PATH_HOST: /tmp/mautic
+          DB_NAME:  test
+          DB_USER:  admin
+          DB_PASSWORD:  password
+          DATA_PATH_HOST: /tmp/db
+      - name: PHP version check
+        run:  docker exec mautic_mautic_1 php -v
+      - name: Mongodb driver check
+        run:  docker exec mautic_mautic_1 php -m | grep mongo
+      - name: Mysql Driver check
+        run: docker exec mautic_mautic_1 php -m | grep mysqli
+      - name: Composer test
+        run: docker exec mautic_mautic_1 composer
+      - name: Folder check
+        run:  docker exec mautic_mautic_1 ls -la /app/
+      - name: Root path check
+        run: |
+          docker exec mautic_mautic_1 ls -la
+      - name: Durpal application test
+        run:  |
+          sleep 30s
+          docker exec mautic_mautic_1 ls -la
+          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:5647/index.php/installer)" != "200" ]]; 
+          do 
+            sleep 10s
+          done
+      - name: Root path check
+        run: docker exec mautic_mautic_1 ls -la /var/www
+      - name: Mautic test
+        run:  curl -i http://localhost:5647/index.php/installer
+      - name: Destroy container and file
+        run:  |
+          docker-compose down
+          echo "y" | docker system prune -a
+          echo "y" | docker image prune
+          sudo rm -rf /tmp/db
+          sudo rm -rf /tmp/mautic
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: github_action_status
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content Mautic PHP ${{ matrix.pv }}, ${{ matrix.BACK_END }} AMD64 :rocket:'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  Drupal-ARM64:
+    strategy:
+      matrix:
+        BACK_END: ["nginx", "apache"]
+        pv: ["8.0", "7.4"]
+    runs-on: ubuntu-22.04
+    name: Drupal-ARM64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: uraimo/run-on-arch-action@v2
+        name: Run commands
+        id: runcmd
+        with:
+          arch: aarch64
+          distro: ubuntu22.04
+          run: |
+            uname -a
+            echo ::set-output name=uname::$(uname -a)
+      - name: Get the output
+        run: |
+          echo "The uname output was ${{ steps.runcmd.outputs.uname }}"
+      - name: Build the Docker image ${{ matrix.BACK_END }}, php ${{ matrix.pv }} and mautic
+        run: docker-compose -f "docker-compose.yml" up -d --build
+        env:
+          PHP_VERSION: ${{ matrix.pv }}
+          BACK_END: ${{ matrix.BACK_END }}
+          XDEBUG: true
+          DISPLAY_PHPERROR: true
+          SERVER_ROOT:  /var/www/
+          APP_CODE_PATH_HOST: /tmp/mautic
+          DB_NAME:  test
+          DB_USER:  admin
+          DB_PASSWORD:  password
+          DATA_PATH_HOST: /tmp/db
+      - name: PHP version check
+        run:  docker exec mautic_mautic_1 php -v
+      - name: Mongodb driver check
+        run:  docker exec mautic_mautic_1 php -m | grep mongo
+      - name: Mysql Driver check
+        run: docker exec mautic_mautic_1 php -m | grep mysqli
+      - name: Composer test
+        run: docker exec mautic_mautic_1 composer
+      - name: Folder check
+        run:  docker exec mautic_mautic_1 ls -la /app/
+      - name: Root path check
+        run: |
+          docker exec mautic_mautic_1 ls -la
+      - name: Durpal application test
+        run:  |
+          sleep 30s
+          docker exec mautic_mautic_1 ls -la
+          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:5647/index.php/installer)" != "200" ]]; 
+          do 
+            sleep 10s
+          done
+      - name: Root path check
+        run: docker exec mautic_mautic_1 ls -la /var/www
+      - name: Mautic test
+        run:  curl -i http://localhost:5647/index.php/installer
+      - name: Destroy container and file
+        run:  |
+          docker-compose down
+          echo "y" | docker system prune -a
+          echo "y" | docker image prune
+          sudo rm -rf /tmp/db
+          sudo rm -rf /tmp/mautic
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: github_action_status
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content Mautic PHP ${{ matrix.pv }}, ${{ matrix.BACK_END }} ARM64 :rocket:'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
